@@ -1236,8 +1236,11 @@ void VConfigManager::initThemes()
     m_themes.insert(VPalette::themeName(file), file);
     */
 
+    outputBuiltInThemes();
+
     // User theme folder.
     QDir dir(getThemeConfigFolder());
+    Q_ASSERT(dir.exists());
     if (!dir.exists()) {
         dir.mkpath(getThemeConfigFolder());
         return;
@@ -1254,6 +1257,21 @@ void VConfigManager::initThemes()
 
         QFileInfo fi(files[0]);
         m_themes.insert(VPalette::themeName(files[0]), themeDir.filePath(files[0]));
+    }
+}
+
+void VConfigManager::outputBuiltInThemes()
+{
+    QDir dir(getThemeConfigFolder());
+    if (!dir.exists()) {
+        dir.mkpath(getThemeConfigFolder());
+    }
+
+    for (auto it = m_themes.begin(); it != m_themes.end(); ++it) {
+        QString file = it.value();
+        QString folder = VUtils::directoryNameFromPath(VUtils::basePathFromPath(file));
+
+        qDebug() << "output built-in theme" << file << folder;
     }
 }
 
